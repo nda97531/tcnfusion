@@ -1,8 +1,6 @@
-import sys
-
 from tensorflow.python import keras
 
-from models.keras_model_tcn import TCN
+from model_and_dataset.keras_model_tcn import TCN
 
 
 def remove_layers(model, trained_file=None, outputlayerindex=None):
@@ -14,10 +12,7 @@ def remove_layers(model, trained_file=None, outputlayerindex=None):
     :return: new model with some layers at the end removed
     """
     if (outputlayerindex is None):
-        if (sys.version[0] == '2'):
-            outputlayerindex = int(raw_input('output layer index= ? '))
-        elif (sys.version[0] == '3'):
-            outputlayerindex = int(input('output layer index= ? '))
+        outputlayerindex = int(input('output layer index= ? '))
 
     if trained_file is not None:
         model.load_weights(trained_file)

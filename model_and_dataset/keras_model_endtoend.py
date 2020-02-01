@@ -1,10 +1,10 @@
 from tensorflow.python import keras
 
-import models.keras_model_remove_last_layers
-from models.keras_model_fusion import SoftFusionModel
-from models.keras_model_tcn import TCN
+import model_and_dataset.keras_model_remove_last_layers
+from model_and_dataset.keras_model_fusion import SoftFusionModel
+from model_and_dataset.keras_model_tcn import TCN
 
-remove_layers = models.keras_model_remove_last_layers.remove_layers
+remove_layers = model_and_dataset.keras_model_remove_last_layers.remove_layers
 
 
 def EndToEndModel(n_classes=20, l2=1e-4, tcndropout=0.2, fusiondropout=0.9, n_FCs_fusion=1,
