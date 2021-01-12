@@ -1,7 +1,6 @@
 import tensorflow as tf
-from tensorflow.python import keras
-
-layers = keras.layers
+from tensorflow import keras
+from tensorflow.keras import layers
 
 
 def receptive_field(k, B, N=2):
@@ -93,6 +92,50 @@ def TCN(input_shape=(60, 32)
 
     return keras.Model(inputs=inputs, outputs=outputs)
 
+def TCNFunction(input_
+        , n_classes=20
+        , n_tcn_channels=(64,) * 3 + (128,) * 2
+        , kernel_size=2
+        , dilation_base=2
+        , dropout_rate=0.2
+        , l2=1e-4
+        , use_batchnorm=False
+        , classify=True
+        ):
+    """
+    :param input_: input window.
+    :param n_classes: Number of classes you wish to classify. This is only used if ``classify=True``
+    :param n_tcn_channels: A tuple specifying the number of Conv filters in each block.
+        The length of tuple equals the number of residual blocks.
+    :param kernel_size: Conv 1D kernel size
+    :param dilation_base: dilation in block number i is (dilation_base^i)
+    :param dropout_rate:
+    :param l2:
+    :param use_batchnorm: If True, apply BatchNorm in res block. Default is False.
+    :param classify: If true, output is classes' probabilities, else, output is a feature vector. Default is True.
+    :return: TCN model, not compiled yet (call model.compile() before training).
+    """
+
+    if (dilation_base > kernel_size):
+        raise ValueError('dilation base must be less than or equal to kernel size')
+
+    l2 = keras.regularizers.l2(l2)
+
+    x = input_
+
+    for i in range(len(n_tcn_channels)):
+        dilation = dilation_base ** i
+        out_channels = n_tcn_channels[i]
+        x = res_tcn_block(x, n_filters=out_channels, kernel_size=kernel_size, dilation=dilation,
+                          dropout_rate=dropout_rate, l2=l2, use_batch_norm=use_batchnorm)
+
+    outputs = layers.Lambda(lambda tt: tt[:, -1, :])(x)
+
+    if classify:
+        outputs = layers.Dense(n_classes, activation=tf.nn.softmax, kernel_regularizer=l2, bias_regularizer=l2,
+                               kernel_initializer=keras.initializers.Orthogonal())(outputs)
+
+    return outputs
 
 if __name__ == '__main__':
     model = TCN()
