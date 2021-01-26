@@ -1,6 +1,6 @@
 from tensorflow.python import keras
 
-from model_and_dataset.keras_model_tcn import TCN
+from model.keras_model_tcn import TCN
 
 
 def remove_layers(model, trained_file=None, outputlayerindex=None):

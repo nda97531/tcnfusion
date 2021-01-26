@@ -1,10 +1,10 @@
 from tensorflow import keras
 
-import model_and_dataset.keras_model_remove_last_layers
-from model_and_dataset.keras_model_fusion import SoftFusionFunction
-from model_and_dataset.keras_model_tcn import TCN, TCNFunction
+import model.keras_model_remove_last_layers
+from model.keras_model_fusion import SoftFusionFunction
+from model.keras_model_tcn import TCN, TCNFunction
 
-remove_layers = model_and_dataset.keras_model_remove_last_layers.remove_layers
+remove_layers = model.keras_model_remove_last_layers.remove_layers
 
 
 def EndToEndModel(
@@ -55,7 +55,9 @@ def EndToEndModel(
 
     output = SoftFusionFunction(
         acc_feature, ske_feature,
-        n_classes=n_classes, l2=l2, drop_rate=fusiondropout, n_FCs=n_FCs_fusion)
+        n_classes=n_classes, l2=l2, drop_rate=fusiondropout, n_FCs=n_FCs_fusion,
+        seq1_size=acc_tcn_channels[-1],
+        seq2_size=ske_tcn_channels[-1])
 
     return keras.Model((acc_seq, ske_seq), output)
 

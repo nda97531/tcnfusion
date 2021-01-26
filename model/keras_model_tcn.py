@@ -18,7 +18,7 @@ name_ = 0
 
 
 def res_tcn_block(x, n_filters, kernel_size, dilation, dropout_rate=0.2, l2=keras.regularizers.l2(0.),
-                  use_batch_norm=False):
+                  use_batch_norm=True):
     global name_
     prev_x = x
     for _ in reversed(range(2)):
@@ -46,15 +46,16 @@ def res_tcn_block(x, n_filters, kernel_size, dilation, dropout_rate=0.2, l2=kera
     return res_x  # , x
 
 
-def TCN(input_shape=(60, 32)
-        , n_classes=20
-        , n_tcn_channels=(64,) * 3 + (128,) * 2
-        , kernel_size=2
-        , dilation_base=2
-        , dropout_rate=0.2
-        , l2=1e-4
-        , use_batchnorm=False
-        , classify=True
+def TCN(input_shape=(60, 32),
+        n_classes=20,
+        n_tcn_channels=(64,) * 3 + (128,) * 2,
+        kernel_size=2,
+        dilation_base=2,
+        dropout_rate=0.2,
+        fc_dropout_rate=0.8,
+        l2=1e-4,
+        use_batchnorm=True,
+        classify=True
         ):
     """
     :param input_shape: Shape of the input window.
@@ -87,6 +88,7 @@ def TCN(input_shape=(60, 32)
     outputs = layers.Lambda(lambda tt: tt[:, -1, :])(x)
 
     if classify:
+        outputs = layers.Dropout(fc_dropout_rate)(outputs)
         outputs = layers.Dense(n_classes, activation=tf.nn.softmax, kernel_regularizer=l2, bias_regularizer=l2,
                                kernel_initializer=keras.initializers.Orthogonal())(outputs)
 
@@ -99,7 +101,7 @@ def TCNFunction(input_
         , dilation_base=2
         , dropout_rate=0.2
         , l2=1e-4
-        , use_batchnorm=False
+        , use_batchnorm=True
         , classify=True
         ):
     """
