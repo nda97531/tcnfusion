@@ -1,6 +1,7 @@
 ### 1. Overview
 
-This code implements a TCN-based fusion model used for human activity recognition.
+This is the implementation of the paper: [Combining skeleton and accelerometer data for human fine-grained activity recognition and abnormal behaviour detection with deep temporal convolutional networks](https://doi.org/10.1007/s11042-021-11058-w)
+
 The model takes in 2 input streams, which are ***acceleration*** and ***skeleton***, and gives a classification result of a 3-second-length window.
 
 - *data_processing/noise_filtering.py*: Lowpass filter for acceleration data.<br/>
